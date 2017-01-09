@@ -6,6 +6,14 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
+/*
+ * TrialMod by JuhaJGamer
+ * 2017
+ * MY CODE NOT YOURS
+ * FFO KCUF(scottish man said this)
+ * Code for modules to use with resource created by me, free to sample and use by anyone.
+ * */
+
 namespace TrialMod
 {
     public class KorexTankModule : PartModule
@@ -177,6 +185,7 @@ namespace TrialMod
             yield return new WaitForSeconds(1);
         }
 
+        //Code to create vessel, not by me (original by TheMightySpud)
         public Vessel CreateAttackVessel()
         {
             // Create a new blank vessel
