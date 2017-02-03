@@ -12,6 +12,8 @@ using UnityEngine;
  * MY CODE NOT YOURS
  * FFO KCUF(scottish man said this)
  * Code for modules to use with resource created by me, free to sample and use by anyone.
+ * DONT STEAL IT COMPLETELY AND CLAIM ITS ALL YOURS
+ * why would you even use this its really stupid looking buggy code with bits commented out
  * */
 
 namespace TrialMod
@@ -179,10 +181,52 @@ namespace TrialMod
         }
         IEnumerator fireThing()
         {
-            //get target
-            ITargetable target = vessel.targetObject;
-            Vessel attackVessel = CreateAttackVessel();
-            yield return new WaitForSeconds(1);
+            bool isDone = false;
+            if (chargeDone)
+            {
+                //get target
+                ITargetable target = vessel.targetObject;
+                Vessel attackVessel = CreateAttackVessel();
+                isDone = true;
+            }
+            if (isDone)
+            {
+                StopCoroutine(fireThing());
+                chargeDone = false;
+                isDone = false;
+            }
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        //Code fully by me
+        //Come to within 150m of the target
+        void RenezvousWithTarget(ITargetable target, Vessel attackVessel)
+        {
+            var oDriver = attackVessel.orbitDriver;
+            var tOrbit = target.GetOrbit();
+            HardsetOrbit(oDriver, tOrbit);
+            attackVessel.GoOffRails();
+            target.GetVessel().GoOffRails();
+        }
+
+        //Code to set orbit, not by me but Kerbaltek
+        private static void HardsetOrbit(OrbitDriver orbitDriver, Orbit newOrbit)
+        {
+            var orbit = orbitDriver.orbit;
+            orbit.inclination = newOrbit.inclination;
+            orbit.eccentricity = newOrbit.eccentricity;
+            orbit.semiMajorAxis = newOrbit.semiMajorAxis;
+            orbit.LAN = newOrbit.LAN;
+            orbit.argumentOfPeriapsis = newOrbit.argumentOfPeriapsis;
+            orbit.meanAnomalyAtEpoch = newOrbit.meanAnomalyAtEpoch;
+            orbit.epoch = newOrbit.epoch;
+            orbit.referenceBody = newOrbit.referenceBody;
+            orbit.Init();
+            orbit.UpdateFromUT(Planetarium.GetUniversalTime());
+            if (orbit.referenceBody != newOrbit.referenceBody)
+            {
+                orbitDriver.OnReferenceBodyChange?.Invoke(newOrbit.referenceBody);
+            }
         }
 
         //Code to create vessel, not by me (original by TheMightySpud)
